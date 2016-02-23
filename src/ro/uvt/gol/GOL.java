@@ -11,7 +11,6 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import static javax.media.opengl.GL.GL_ARRAY_BUFFER;
 import static javax.media.opengl.GL.GL_ELEMENT_ARRAY_BUFFER;
 import static javax.media.opengl.GL.GL_FLOAT;
-import static javax.media.opengl.GL.GL_FRONT;
 import static javax.media.opengl.GL.GL_NEAREST;
 import static javax.media.opengl.GL.GL_REPEAT;
 import static javax.media.opengl.GL.GL_STATIC_DRAW;
@@ -22,10 +21,6 @@ import static javax.media.opengl.GL.GL_TEXTURE_WRAP_S;
 import static javax.media.opengl.GL.GL_TEXTURE_WRAP_T;
 import static javax.media.opengl.GL.GL_TRIANGLES;
 import static javax.media.opengl.GL.GL_UNSIGNED_INT;
-import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_AMBIENT;
-import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
-import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SHININESS;
-import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
 import static javax.media.opengl.fixedfunc.GLPointerFunc.GL_NORMAL_ARRAY;
 import static javax.media.opengl.fixedfunc.GLPointerFunc.GL_TEXTURE_COORD_ARRAY;
 import static javax.media.opengl.fixedfunc.GLPointerFunc.GL_VERTEX_ARRAY;
@@ -51,19 +46,12 @@ public class GOL {
   }
 
   public void golDraw(GraphicObject component) {
-    enableMaterial(component.getMaterial());
+    if (component.getMaterial() != null) {
+      component.getMaterial().bind(gl);
+    }
     component.getTexture().bind(gl);
     gl.glBindVertexArray(component.getVertexArrayObjectID());
     gl.glDrawElements(GL_TRIANGLES, component.getTotalElements(), GL_UNSIGNED_INT, 0);
-  }
-
-  private void enableMaterial(Material theMaterial) {
-    if (theMaterial != null) {
-      gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, theMaterial.getDiffuse(), 0);
-      gl.glMaterialfv(GL_FRONT, GL_SPECULAR, theMaterial.getSpecular(), 0);
-      gl.glMaterialfv(GL_FRONT, GL_AMBIENT, theMaterial.getAmbient(), 0);
-      gl.glMaterialfv(GL_FRONT, GL_SHININESS, theMaterial.getShine(), 0);
-    }
   }
 
   private GraphicObject buildComponent(String objFileName, String textureFIleName) {
